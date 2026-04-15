@@ -4,7 +4,7 @@ import vk_api
 from vk_api.longpoll import VkEventType, VkLongPoll
 
 import dialogflow_client
-from config import VK_GROUP_TOKEN
+from config import DEBUG, VK_GROUP_TOKEN
 from logger import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -35,7 +35,7 @@ def respond(event, vk) -> None:
 
 
 def main() -> None:
-    setup_logging()
+    setup_logging(logging.DEBUG if DEBUG else logging.INFO)
 
     logger.info("Starting VK bot")
     vk_session = vk_api.VkApi(token=VK_GROUP_TOKEN)
