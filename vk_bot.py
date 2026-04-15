@@ -1,0 +1,50 @@
+import logging
+
+import vk_api
+from vk_api.longpoll import VkEventType, VkLongPoll
+
+import dialogflow_client
+from config import VK_GROUP_TOKEN
+from logger import setup_logging
+
+logger = logging.getLogger(__name__)
+
+
+def respond(event, vk) -> None:
+    try:
+        reply = dialogflow_client.detect_intent_text(
+            str(event.user_id),
+            event.text,
+        )
+    except Exception:
+        logger.exception("DialogFlow error for user %s", event.user_id)
+        reply = "Something went wrong. Please try again."
+
+    vk.messages.send(
+        user_id=event.user_id,
+        message=reply,
+        random_id=0,
+    )
+
+
+def main() -> None:
+    setup_logging()
+
+    logger.info("Starting VK bot")
+    vk_session = vk_api.VkApi(token=VK_GROUP_TOKEN)
+    vk = vk_session.get_api()
+    longpoll = VkLongPoll(vk_session)
+
+    logger.info("VK bot is running")
+    for event in longpoll.listen():
+        if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+            logger.info(
+                "Message from user %s: %s",
+                event.user_id,
+                event.text,
+            )
+            respond(event, vk)
+
+
+if __name__ == "__main__":
+    main()
