@@ -10,8 +10,8 @@ from telegram.ext import (
 )
 
 import dialogflow_client
-import logger
 from config import BOT_TOKEN, HTTP_PROXY, USE_PROXY
+from logger import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,8 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 def main() -> None:
+    setup_logging()
+
     logger.info("Starting bot")
     application = _get_application()
 
