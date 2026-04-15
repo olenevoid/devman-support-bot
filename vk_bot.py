@@ -10,15 +10,22 @@ from logger import setup_logging
 logger = logging.getLogger(__name__)
 
 
+FALLBACK_INTENTS = ["Default Fallback Intent"]
+
+
 def respond(event, vk) -> None:
     try:
         reply = dialogflow_client.detect_intent_text(
             str(event.user_id),
             event.text,
+            skip_intents=FALLBACK_INTENTS,
         )
     except Exception:
         logger.exception("DialogFlow error for user %s", event.user_id)
-        reply = "Something went wrong. Please try again."
+        return
+
+    if reply is None:
+        return
 
     vk.messages.send(
         user_id=event.user_id,

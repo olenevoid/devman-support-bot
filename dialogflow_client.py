@@ -11,7 +11,8 @@ def detect_intent_text(
     session_id: str,
     text: str,
     language_code: str = "ru-RU",
-) -> str:
+    skip_intents: list[str] | None = None,
+) -> str | None:
     session_client = dialogflow.SessionsClient()
     session = session_client.session_path(GOOGLE_CLOUD_PROJECT_ID, session_id)
 
@@ -37,5 +38,13 @@ def detect_intent_text(
         session_id,
         result.fulfillment_text,
     )
+
+    if skip_intents and result.intent.display_name in skip_intents:
+        logger.debug(
+            "Skipping intent '%s' for session %s",
+            result.intent.display_name,
+            session_id,
+        )
+        return None
 
     return result.fulfillment_text
