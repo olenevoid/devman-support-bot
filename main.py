@@ -9,6 +9,7 @@ from telegram.ext import (
     filters,
 )
 
+import dialogflow_client
 import logger
 from config import BOT_TOKEN, HTTP_PROXY, USE_PROXY
 
@@ -33,10 +34,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    logger.info(
-        "Echoing message from user %s: %s", user.id, update.message.text
-    )
-    await update.message.reply_text(update.message.text)
+    text = update.message.text
+    logger.info("Message from user %s: %s", user.id, text)
+    try:
+        reply = dialogflow_client.detect_intent_text(str(user.id), text)
+    except Exception:
+        logger.exception("DialogFlow error for user %s", user.id)
+        reply = "Something went wrong. Please try again."
+    await update.message.reply_text(reply)
 
 
 def main() -> None:
