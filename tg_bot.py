@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def _get_application() -> Application:
     builder = Application.builder().token(BOT_TOKEN)
-    if USE_PROXY and HTTP_PROXY:
+    if USE_PROXY:
         builder = builder.proxy(HTTP_PROXY).get_updates_proxy(HTTP_PROXY)
         logger.info("Bot will use proxy: %s", HTTP_PROXY)
     return builder.build()
