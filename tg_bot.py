@@ -35,7 +35,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         logger.exception("Unexpected error in start handler")
 
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         user = update.effective_user
         text = update.message.text
@@ -47,7 +47,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply = "Something went wrong. Please try again."
         await update.message.reply_text(reply)
     except Exception:
-        logger.exception("Unexpected error in echo handler")
+        logger.exception("Unexpected error in respond handler")
 
 
 def main() -> None:
@@ -64,7 +64,7 @@ def main() -> None:
     application.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND,
-            echo,
+            respond,
         )
     )
 
