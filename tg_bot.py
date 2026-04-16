@@ -29,7 +29,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user = update.effective_user
         logger.info("User %s started the bot", user.id)
         await update.message.reply_text(
-            "Hi! Send me a message and I'll echo it back."
+            "Привет! Я бот технической поддержки. "
+            "Задайте ваш вопрос, и я постараюсь помочь."
         )
     except Exception:
         logger.exception("Unexpected error in start handler")
@@ -39,7 +40,7 @@ async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         user = update.effective_user
         text = update.message.text
-        logger.info("Message from user %s: %s", user.id, text)
+        logger.info("Message from user %s", user.id)
         try:
             reply = dialogflow_client.detect_intent_text(str(user.id), text)
         except Exception:

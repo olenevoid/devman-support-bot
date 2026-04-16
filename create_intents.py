@@ -37,7 +37,7 @@ def create_intents_from_json(json_path: str) -> None:
         try:
             _validate_intent_data(display_name, data)
         except ValueError:
-            logger.exception("Invalid data for intent '%s'", display_name)
+            logger.warning("Invalid data for intent '%s'", display_name)
             failed += 1
             continue
 

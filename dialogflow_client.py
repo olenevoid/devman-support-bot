@@ -6,6 +6,8 @@ from config import GOOGLE_CLOUD_PROJECT_ID
 
 logger = logging.getLogger(__name__)
 
+_session_client = dialogflow.SessionsClient()
+
 
 def detect_intent_text(
     session_id: str,
@@ -13,8 +15,10 @@ def detect_intent_text(
     language_code: str = "ru-RU",
     skip_intents: list[str] | None = None,
 ) -> str | None:
-    session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(GOOGLE_CLOUD_PROJECT_ID, session_id)
+    session = _session_client.session_path(
+        GOOGLE_CLOUD_PROJECT_ID,
+        session_id,
+    )
 
     text_input = dialogflow.TextInput(
         text=text,
@@ -28,16 +32,9 @@ def detect_intent_text(
         text,
     )
 
-    try:
-        response = session_client.detect_intent(
-            request={"session": session, "query_input": query_input},
-        )
-    except Exception:
-        logger.exception(
-            "Unexpected DialogFlow error for session %s",
-            session_id,
-        )
-        raise
+    response = _session_client.detect_intent(
+        request={"session": session, "query_input": query_input},
+    )
 
     result = response.query_result
     logger.debug(

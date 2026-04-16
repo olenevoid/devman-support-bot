@@ -2,6 +2,7 @@ import logging
 
 import vk_api
 from vk_api.longpoll import VkEventType, VkLongPoll
+from vk_api.utils import get_random_id
 
 import dialogflow_client
 from config import DEBUG, VK_GROUP_TOKEN
@@ -30,7 +31,7 @@ def respond(event, vk) -> None:
     vk.messages.send(
         user_id=event.user_id,
         message=reply,
-        random_id=0,
+        random_id=get_random_id(),
     )
 
 
@@ -49,11 +50,7 @@ def main() -> None:
     logger.info("VK bot is running")
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-            logger.info(
-                "Message from user %s: %s",
-                event.user_id,
-                event.text,
-            )
+            logger.info("Message from user %s", event.user_id)
             try:
                 respond(event, vk)
             except Exception:

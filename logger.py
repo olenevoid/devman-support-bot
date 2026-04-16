@@ -10,6 +10,8 @@ from config import (
     USE_PROXY,
 )
 
+_logger = logging.getLogger(__name__)
+
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 TG_LOG_FORMAT = "%(levelname)s: %(message)s"
 LOG_FILE = "bot.log"
@@ -38,7 +40,10 @@ class TelegramHandler(logging.Handler):
                 timeout=10,
             )
         except Exception:
-            pass
+            _logger.warning(
+                "Failed to send log to Telegram",
+                exc_info=True,
+            )
 
 
 def setup_logging(level=logging.INFO) -> None:
@@ -52,7 +57,14 @@ def setup_logging(level=logging.INFO) -> None:
     file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
     logging.getLogger().addHandler(file_handler)
 
-    if TELEGRAM_LOG_BOT_TOKEN and TELEGRAM_LOG_CHAT_ID:
+    has_token = bool(TELEGRAM_LOG_BOT_TOKEN)
+    has_chat_id = bool(TELEGRAM_LOG_CHAT_ID)
+    if has_token != has_chat_id:
+        _logger.warning(
+            "Telegram logging disabled: both TELEGRAM_LOG_BOT_TOKEN "
+            "and TELEGRAM_LOG_CHAT_ID must be set",
+        )
+    if has_token and has_chat_id:
         tg_handler = TelegramHandler(
             TELEGRAM_LOG_BOT_TOKEN,
             TELEGRAM_LOG_CHAT_ID,
