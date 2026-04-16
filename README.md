@@ -60,7 +60,7 @@ python create_intents.py questions.json
 - **GOOGLE_APPLICATION_CREDENTIALS** — путь к JSON-файлу с ключами сервисного аккаунта Google Cloud
 - **DEBUG** — включение отладочного режима (`True` / `False`). По умолчанию `False`
 - **USE_PROXY** — включение HTTP-прокси (`True` / `False`). По умолчанию `False`
-- **HTTP_PROXY** — адрес прокси в формате `http://ip:port`. Игнорируется, если `USE_PROXY=False`
+- **BOT_PROXY** — адрес прокси в формате `http://ip:port`. Игнорируется, если `USE_PROXY=False`
 - **TELEGRAM_LOG_BOT_TOKEN** — (опционально) токен Telegram бота для отправки логов
 - **TELEGRAM_LOG_CHAT_ID** — (опционально) id чата для получения логов. Если указан только один из параметров, Telegram-логирование не будет активировано
 
@@ -73,7 +73,7 @@ GOOGLE_CLOUD_PROJECT_ID=your-project-id
 GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
 DEBUG=False
 USE_PROXY=False
-HTTP_PROXY=http://some-proxy-address:port
+BOT_PROXY=http://some-proxy-address:port
 TELEGRAM_LOG_BOT_TOKEN=optional_bot_token_for_logs
 TELEGRAM_LOG_CHAT_ID=optional_chat_id_for_logs
 ```

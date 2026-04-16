@@ -4,7 +4,7 @@ from logging.handlers import RotatingFileHandler
 import requests
 
 from config import (
-    HTTP_PROXY,
+    BOT_PROXY,
     TELEGRAM_LOG_BOT_TOKEN,
     TELEGRAM_LOG_CHAT_ID,
     USE_PROXY,
@@ -30,7 +30,7 @@ class TelegramHandler(logging.Handler):
         if len(log_entry) > TG_MAX_MESSAGE_LENGTH:
             log_entry = log_entry[:TG_MAX_MESSAGE_LENGTH]
         proxies = (
-            {"https": HTTP_PROXY, "http": HTTP_PROXY} if USE_PROXY else None
+            {"https": BOT_PROXY, "http": BOT_PROXY} if USE_PROXY else None
         )
         try:
             requests.post(

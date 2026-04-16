@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 import dialogflow_client
-from config import BOT_TOKEN, DEBUG, HTTP_PROXY, USE_PROXY
+from config import BOT_TOKEN, BOT_PROXY, DEBUG, USE_PROXY
 from logger import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 def _get_application() -> Application:
     builder = Application.builder().token(BOT_TOKEN)
     if USE_PROXY:
-        builder = builder.proxy(HTTP_PROXY).get_updates_proxy(HTTP_PROXY)
-        logger.info("Bot will use proxy: %s", HTTP_PROXY)
+        builder = builder.proxy(BOT_PROXY).get_updates_proxy(BOT_PROXY)
+        logger.info("Bot will use proxy: %s", BOT_PROXY)
     return builder.build()
 
 
