@@ -28,9 +28,16 @@ def detect_intent_text(
         text,
     )
 
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input},
-    )
+    try:
+        response = session_client.detect_intent(
+            request={"session": session, "query_input": query_input},
+        )
+    except Exception:
+        logger.exception(
+            "Unexpected DialogFlow error for session %s",
+            session_id,
+        )
+        raise
 
     result = response.query_result
     logger.debug(

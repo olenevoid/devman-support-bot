@@ -38,9 +38,13 @@ def main() -> None:
     setup_logging(logging.DEBUG if DEBUG else logging.INFO)
 
     logger.info("Starting VK bot")
-    vk_session = vk_api.VkApi(token=VK_GROUP_TOKEN)
-    vk = vk_session.get_api()
-    longpoll = VkLongPoll(vk_session)
+    try:
+        vk_session = vk_api.VkApi(token=VK_GROUP_TOKEN)
+        vk = vk_session.get_api()
+        longpoll = VkLongPoll(vk_session)
+    except Exception:
+        logger.exception("Failed to initialize VK session")
+        return
 
     logger.info("VK bot is running")
     for event in longpoll.listen():
@@ -50,7 +54,10 @@ def main() -> None:
                 event.user_id,
                 event.text,
             )
-            respond(event, vk)
+            try:
+                respond(event, vk)
+            except Exception:
+                logger.exception("Unexpected error handling VK event")
 
 
 if __name__ == "__main__":

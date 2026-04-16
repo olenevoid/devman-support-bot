@@ -25,30 +25,40 @@ def _get_application() -> Application:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    logger.info("User %s started the bot", user.id)
-    await update.message.reply_text(
-        "Hi! Send me a message and I'll echo it back."
-    )
+    try:
+        user = update.effective_user
+        logger.info("User %s started the bot", user.id)
+        await update.message.reply_text(
+            "Hi! Send me a message and I'll echo it back."
+        )
+    except Exception:
+        logger.exception("Unexpected error in start handler")
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    text = update.message.text
-    logger.info("Message from user %s: %s", user.id, text)
     try:
-        reply = dialogflow_client.detect_intent_text(str(user.id), text)
+        user = update.effective_user
+        text = update.message.text
+        logger.info("Message from user %s: %s", user.id, text)
+        try:
+            reply = dialogflow_client.detect_intent_text(str(user.id), text)
+        except Exception:
+            logger.exception("DialogFlow error for user %s", user.id)
+            reply = "Something went wrong. Please try again."
+        await update.message.reply_text(reply)
     except Exception:
-        logger.exception("DialogFlow error for user %s", user.id)
-        reply = "Something went wrong. Please try again."
-    await update.message.reply_text(reply)
+        logger.exception("Unexpected error in echo handler")
 
 
 def main() -> None:
     setup_logging(logging.DEBUG if DEBUG else logging.INFO)
 
     logger.info("Starting bot")
-    application = _get_application()
+    try:
+        application = _get_application()
+    except Exception:
+        logger.exception("Failed to initialize TG bot")
+        return
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(
