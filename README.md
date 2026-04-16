@@ -2,15 +2,13 @@
 
 Бот технической поддержки для Telegram и ВКонтакте, использующий [Google Dialogflow](https://cloud.google.com/dialogflow) для распознавания намерений и автоматических ответов на вопросы пользователей.
 
-<!-- Placeholder: GIF-демонстрация Telegram бота -->
-<!-- ![Telegram бот в действии](./assets/tg_demo.gif) -->
+<img width="589" height="521" alt="Telegram_GqJrttYeHy" src="https://github.com/user-attachments/assets/fff4f584-4d84-48e7-9e06-3be5310cf98a" />
 
-**Демо Telegram бота:** <!-- ссылка на демо -->
+**Демо Telegram бота:** [https://t.me/demo_spprt_bot](https://t.me/demo_spprt_bot)
 
-<!-- Placeholder: GIF-демонстрация VK бота -->
-<!-- ![VK бот в действии](./assets/vk_demo.gif) -->
+<img width="579" height="558" alt="chrome_rTmS3oHWcF" src="https://github.com/user-attachments/assets/72dcddfa-1a75-468d-9eb4-a4718c020d82" />
 
-**Демо VK бота:** <!-- ссылка на демо -->
+**Демо VK бота:** [https://vk.ru/club237694014](https://vk.ru/club237694014)
 
 Боты запускаются независимо друг от друга и могут работать одновременно.
 
