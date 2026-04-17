@@ -2,6 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 import requests
+from requests.exceptions import RequestException
 
 from config import (
     BOT_PROXY,
@@ -24,14 +25,18 @@ class TelegramHandler(logging.Handler):
         self.bot_token = bot_token
         self.chat_id = chat_id
         self.api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        self._sending = False
 
     def emit(self, record):
+        if self._sending:
+            return
         log_entry = self.format(record)
         if len(log_entry) > TG_MAX_MESSAGE_LENGTH:
             log_entry = log_entry[:TG_MAX_MESSAGE_LENGTH]
         proxies = (
             {"https": BOT_PROXY, "http": BOT_PROXY} if USE_PROXY else None
         )
+        self._sending = True
         try:
             requests.post(
                 self.api_url,
@@ -39,11 +44,10 @@ class TelegramHandler(logging.Handler):
                 proxies=proxies,
                 timeout=10,
             )
-        except Exception:
-            _logger.warning(
-                "Failed to send log to Telegram",
-                exc_info=True,
-            )
+        except RequestException:
+            self.handleError(record)
+        finally:
+            self._sending = False
 
 
 def setup_logging(level=logging.INFO) -> None:

@@ -1,6 +1,7 @@
 import functools
 import logging
 
+from google.api_core import exceptions as gcp_exceptions
 from google.cloud import dialogflow
 
 from config import GOOGLE_CLOUD_PROJECT_ID
@@ -37,9 +38,13 @@ def detect_intent_text(
         text,
     )
 
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input},
-    )
+    try:
+        response = session_client.detect_intent(
+            request={"session": session, "query_input": query_input},
+        )
+    except gcp_exceptions.GoogleAPIError:
+        logger.exception("DialogFlow API error for session %s", session_id)
+        return None
 
     result = response.query_result
     logger.debug(

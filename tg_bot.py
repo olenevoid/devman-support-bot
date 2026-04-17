@@ -1,6 +1,7 @@
 import logging
 
 from telegram import Update
+from telegram.error import TelegramError
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -24,31 +25,38 @@ def _get_application() -> Application:
     return builder.build()
 
 
+async def handle_error(
+    update: object,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    logger.exception("Unexpected error in TG handler")
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    logger.info("User %s started the bot", user.id)
     try:
-        user = update.effective_user
-        logger.info("User %s started the bot", user.id)
         await update.message.reply_text(
             "Привет! Я бот технической поддержки. "
             "Задайте ваш вопрос, и я постараюсь помочь."
         )
-    except Exception:
-        logger.exception("Unexpected error in start handler")
+    except TelegramError:
+        logger.exception("Failed to send start message to user %s", user.id)
 
 
 async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    text = update.message.text
+    logger.info("Message from user %s", user.id)
+
+    reply = dialogflow_client.detect_intent_text(str(user.id), text)
+    if reply is None:
+        reply = "Something went wrong. Please try again."
+
     try:
-        user = update.effective_user
-        text = update.message.text
-        logger.info("Message from user %s", user.id)
-        try:
-            reply = dialogflow_client.detect_intent_text(str(user.id), text)
-        except Exception:
-            logger.exception("DialogFlow error for user %s", user.id)
-            reply = "Something went wrong. Please try again."
         await update.message.reply_text(reply)
-    except Exception:
-        logger.exception("Unexpected error in respond handler")
+    except TelegramError:
+        logger.exception("Failed to reply to user %s", user.id)
 
 
 def main() -> None:
@@ -57,7 +65,7 @@ def main() -> None:
     logger.info("Starting bot")
     try:
         application = _get_application()
-    except Exception:
+    except (TelegramError, ValueError):
         logger.exception("Failed to initialize TG bot")
         return
 
@@ -68,6 +76,7 @@ def main() -> None:
             respond,
         )
     )
+    application.add_error_handler(handle_error)
 
     logger.info("Bot is running")
     application.run_polling(allowed_updates=Update.ALL_TYPES)

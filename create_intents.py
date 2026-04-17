@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 
+from google.api_core import exceptions as gcp_exceptions
 from google.cloud import dialogflow
 
 from config import GOOGLE_CLOUD_PROJECT_ID
@@ -64,7 +65,7 @@ def create_intents_from_json(json_path: str) -> None:
             )
             logger.info("Intent created: %s", display_name)
             created += 1
-        except Exception:
+        except gcp_exceptions.GoogleAPIError:
             logger.exception("Failed to create intent '%s'", display_name)
             failed += 1
 
@@ -88,7 +89,7 @@ def main() -> None:
 
     try:
         create_intents_from_json(json_path)
-    except Exception:
+    except (OSError, json.JSONDecodeError):
         logger.exception("Failed to create intents")
         sys.exit(1)
 
