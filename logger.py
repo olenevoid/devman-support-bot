@@ -6,7 +6,7 @@ from requests.exceptions import RequestException
 
 from config import (
     BOT_PROXY,
-        LOG_FILENAME,
+    LOG_FILENAME,
     TELEGRAM_LOG_BOT_TOKEN,
     TELEGRAM_LOG_CHAT_ID,
     USE_PROXY,
@@ -28,7 +28,7 @@ class TelegramHandler(logging.Handler):
             return
         log_entry = self.format(record)
         if len(log_entry) > self.TG_MAX_MESSAGE_LENGTH:
-            log_entry = log_entry[:self.TG_MAX_MESSAGE_LENGTH]
+            log_entry = log_entry[: self.TG_MAX_MESSAGE_LENGTH]
         proxies = (
             {"https": BOT_PROXY, "http": BOT_PROXY} if USE_PROXY else None
         )
@@ -53,7 +53,7 @@ def setup_logging(level=logging.INFO) -> None:
     logging.basicConfig(format=log_format, level=level)
 
     file_handler = RotatingFileHandler(
-    LOG_FILENAME,
+        LOG_FILENAME,
         maxBytes=10 * 1024 * 1024,
         backupCount=5,
     )

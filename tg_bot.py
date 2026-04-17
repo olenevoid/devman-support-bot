@@ -11,7 +11,7 @@ from telegram.ext import (
 )
 
 import dialogflow_client
-from config import BOT_TOKEN, BOT_PROXY, DEBUG, USE_PROXY
+from config import BOT_PROXY, BOT_TOKEN, DEBUG, USE_PROXY
 from logger import setup_logging
 
 logger = logging.getLogger(__name__)
