@@ -63,6 +63,7 @@ python create_intents.py questions.json
 - **BOT_PROXY** — адрес прокси в формате `http://ip:port`. Игнорируется, если `USE_PROXY=False`
 - **TELEGRAM_LOG_BOT_TOKEN** — (опционально) токен Telegram бота для отправки логов
 - **TELEGRAM_LOG_CHAT_ID** — (опционально) id чата для получения логов. Если указан только один из параметров, Telegram-логирование не будет активировано
+- **LOG_FILENAME** — путь к файлу логов. По умолчанию `bot.log`
 
 Пример содержания файла `.env`:
 
@@ -76,6 +77,7 @@ USE_PROXY=False
 BOT_PROXY=http://some-proxy-address:port
 TELEGRAM_LOG_BOT_TOKEN=optional_bot_token_for_logs
 TELEGRAM_LOG_CHAT_ID=optional_chat_id_for_logs
+LOG_FILENAME=bot.log
 ```
 
 ## Запуск

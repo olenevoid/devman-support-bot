@@ -6,7 +6,7 @@ from requests.exceptions import RequestException
 
 from config import (
     BOT_PROXY,
-    LOG_FILE,
+        LOG_FILENAME,
     TELEGRAM_LOG_BOT_TOKEN,
     TELEGRAM_LOG_CHAT_ID,
     USE_PROXY,
@@ -53,7 +53,7 @@ def setup_logging(level=logging.INFO) -> None:
     logging.basicConfig(format=log_format, level=level)
 
     file_handler = RotatingFileHandler(
-        LOG_FILE,
+    LOG_FILENAME,
         maxBytes=10 * 1024 * 1024,
         backupCount=5,
     )
