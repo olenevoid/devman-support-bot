@@ -1,3 +1,4 @@
+import functools
 import logging
 
 from google.cloud import dialogflow
@@ -6,7 +7,10 @@ from config import GOOGLE_CLOUD_PROJECT_ID
 
 logger = logging.getLogger(__name__)
 
-_session_client = dialogflow.SessionsClient()
+
+@functools.lru_cache(maxsize=1)
+def _get_session_client():
+    return dialogflow.SessionsClient()
 
 
 def detect_intent_text(
@@ -15,7 +19,8 @@ def detect_intent_text(
     language_code: str = "ru-RU",
     skip_intents: list[str] | None = None,
 ) -> str | None:
-    session = _session_client.session_path(
+    session_client = _get_session_client()
+    session = session_client.session_path(
         GOOGLE_CLOUD_PROJECT_ID,
         session_id,
     )
@@ -32,7 +37,7 @@ def detect_intent_text(
         text,
     )
 
-    response = _session_client.detect_intent(
+    response = session_client.detect_intent(
         request={"session": session, "query_input": query_input},
     )
 
